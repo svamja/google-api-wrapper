@@ -28,8 +28,10 @@ Returns two-dimensional array of rows and column values of sheet data.
 ## Writing
 
     sheets.set(id, range = 'Sheet1');
-    sheets.write(row);
-    sheets.endWrite();
+    await sheets.clear();
+    await sheets.write(row1);
+    await sheets.write(row2);
+    await sheets.endWrite();
     
 Batches up multiple rows and then write once at interval of 500 rows, or when endWrite() is called.
 
