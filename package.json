@@ -1,10 +1,10 @@
 {
   "name": "google-api-wrapper",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Google API Wrapper",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tap"
   },
   "author": "Sanjay Vamja",
   "license": "MIT",
@@ -14,7 +14,9 @@
   "directories": {
     "lib": "lib"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "tap": "^14.10.7"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/svamja/google-api-wrapper.git"

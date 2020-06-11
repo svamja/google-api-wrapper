@@ -14,24 +14,24 @@ This will add googleapis as dependency.
     async main() {
       Google.setCred(cred);
       Google.setToken(token);
-      const sheets = Google.getSheets();
-      const rows = await sheets.read('1nZqgw5otHxvg7by-qnYmjkyNdHAPQYgduv7Tbf5aKlw');
+      const sheet = Google.getSheet();
+      const rows = await sheet.read('1nZqgw5otHxvg7by-qnYmjkyNdHAPQYgduv7Tbf5aKlw');
       console.log(rows);
     }
 
 ## Reading
 
-    await sheets.read(id, range = 'Sheet1');
+    await sheet.read(id, range = 'Sheet1');
     
 Returns two-dimensional array of rows and column values of sheet data.
 
 ## Writing
 
-    sheets.set(id, range = 'Sheet1');
-    await sheets.clear();
-    await sheets.write(row1);
-    await sheets.write(row2);
-    await sheets.endWrite();
+    sheet.set(id, range = 'Sheet1');
+    await sheet.clear();
+    await sheet.write(row1);
+    await sheet.write(row2);
+    await sheet.endWrite();
     
 Batches up multiple rows and then write once at interval of 500 rows, or when endWrite() is called.
 
