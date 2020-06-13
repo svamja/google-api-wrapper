@@ -18,14 +18,16 @@ This will add googleapis as dependency.
       const rows = await sheet.read('1nZqgw5otHxvg7by-qnYmjkyNdHAPQYgduv7Tbf5aKlw');
       console.log(rows);
     }
+    
+    main();
 
-## Reading
+## Reading Sheet
 
     await sheet.read(id, range = 'Sheet1');
     
 Returns two-dimensional array of rows and column values of sheet data.
 
-## Writing
+## Writing Sheet
 
     sheet.set(id, range = 'Sheet1');
     await sheet.clear();
@@ -35,6 +37,15 @@ Returns two-dimensional array of rows and column values of sheet data.
     
 Batches up multiple rows and then write once at interval of 500 rows, or when endWrite() is called.
 
+## Creating Sheet
 
+    await sheet.create(name);
+    await sheet.write([ 'hello', 'there' ]);
+    await sheet.create(name, folderId);
+
+## Move File
+
+    const drive = Google.getDrive();
+    await drive.move(fileId, folderId);
 
 
