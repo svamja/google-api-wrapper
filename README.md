@@ -11,7 +11,7 @@ This will add googleapis as dependency.
 
     const Google = require('google-api-wrapper');
     
-    async main() {
+    async function main() {
       Google.setCred(cred);
       Google.setToken(token);
       const sheet = Google.getSheet();
@@ -20,6 +20,16 @@ This will add googleapis as dependency.
     }
     
     main();
+
+## Set Credentials
+
+    Google.loadCredFile(credentails.json);
+    Google.loadTokenFile(token.json);
+
+Or,
+
+    Google.setCred(cred);
+    Google.setToken(token);
 
 ## Reading Sheet
 
@@ -47,5 +57,22 @@ Batches up multiple rows and then write once at interval of 500 rows, or when en
 
     const drive = Google.getDrive();
     await drive.move(fileId, folderId);
+
+
+## Testing
+
+To test the package,
+
+1. Create / download credentails.json file from Google Console.
+2. After OAuth2, capture the token returned in token.json file.
+3. Create .env file with path to these two files as below
+
+```
+# .env file
+CRED_PATH=/path/to/credentials.json
+TOKEN_PATH=/path/to/token.json
+```
+
+4. run `npm test`
 
 
