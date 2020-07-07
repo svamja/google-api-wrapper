@@ -50,9 +50,10 @@ test('google sheet creation', async function(t) {
 
     try {
 
-        await sheet.create('Test Sheet');
+        await sheet.create('Google API Wrapper Test Sheet');
         await sheet.clear();
         await sheet.write([ 'Test', 'Sheet Creation' ]);
+        await sheet.write([ 'Origination', 'google-api-wrapper/test/basic.js' ]);
         await sheet.write([ 'Status', 'Success' ]);
         await sheet.write([ 'Date', new Date().toString() ]);
         await sheet.endWrite();
