@@ -53,6 +53,13 @@ Batches up multiple rows and then write once at interval of 500 rows, or when en
     await sheet.write([ 'hello', 'there' ]);
     await sheet.create(name, folderId);
 
+## Reading File (Raw)
+
+    const drive = Google.getDrive();
+    await drive.readFile(id);
+    
+Returns string of file content.
+
 ## Move File
 
     const drive = Google.getDrive();
