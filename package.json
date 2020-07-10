@@ -1,6 +1,6 @@
 {
   "name": "google-api-wrapper",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Google API Wrapper",
   "main": "index.js",
   "scripts": {
