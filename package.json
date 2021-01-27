@@ -1,6 +1,6 @@
 {
   "name": "google-api-wrapper",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "Google API Wrapper",
   "main": "index.js",
   "scripts": {
@@ -9,7 +9,9 @@
   "author": "Sanjay Vamja",
   "license": "MIT",
   "dependencies": {
-    "googleapis": "^39"
+    "fs": "0.0.1-security",
+    "googleapis": "^39",
+    "lodash": "^4.17.20"
   },
   "directories": {
     "lib": "lib"

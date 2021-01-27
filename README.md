@@ -12,8 +12,8 @@ This will add googleapis as dependency.
     const Google = require('google-api-wrapper');
     
     async function main() {
-      Google.setCred(cred);
-      Google.setToken(token);
+      Google.loadCredFile('/path/to/credentails.json');
+      Google.loadTokenFile('/path/to/token.json');
       const sheet = Google.getSheet();
       const rows = await sheet.read('1nZqgw5otHxvg7by-qnYmjkyNdHAPQYgduv7Tbf5aKlw');
       console.log(rows);
@@ -23,8 +23,8 @@ This will add googleapis as dependency.
 
 ## Set Credentials
 
-    Google.loadCredFile(credentails.json);
-    Google.loadTokenFile(token.json);
+    Google.loadCredFile('/path/to/credentails.json');
+    Google.loadTokenFile('/path/to/token.json');
 
 Or,
 
@@ -34,8 +34,14 @@ Or,
 ## Reading Sheet
 
     await sheet.read(id, range = 'Sheet1');
-    
+
 Returns two-dimensional array of rows and column values of sheet data.
+
+    await sheet.readDocs(id, range = 'Sheet1');
+    await sheet.readDocs(sheet_name, range, { byName: false, slugify: true });
+
+Returns array of objects by using first row as field names. 
+"slugify" will convert field names to slugs (eg: "Min. Qty" to "min_qty")
 
 ## Writing Sheet
 
