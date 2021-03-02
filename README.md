@@ -14,118 +14,152 @@ This will add googleapis as dependency.
     async function main() {
       Google.loadCredFile('/path/to/credentails.json');
       Google.loadTokenFile('/path/to/token.json');
-      const sheet = Google.getSheet();
-      const rows = await sheet.read('1nZqgw5otHxvg7by-qnYmjkyNdHAPQYgduv7Tbf5aKlw');
+      const Sheet = Google.getSheet();
+      const rows = await Sheet.read('1nZqgw5otHxvg7by-qnYmjkyNdHAPQYgduv7Tbf5aKlw');
       console.log(rows);
     }
     
     main();
 
-## Set Credentials
+## Initializing Auth
+
+If you already have auth object
+
+    Googe.setAuth(authObject);
+
+Or, set credential file followed by token
 
     Google.loadCredFile('/path/to/credentails.json');
     Google.loadTokenFile('/path/to/token.json');
 
-Or,
+Or, set them directly from json objects
 
     Google.setCred(cred);
     Google.setToken(token);
 
+Or, exchange token provided from OAuth
+
+    Google.setCred(cred);
+    let token = await Google.exchangeCode(code);
+
+Or, set refresh token
+
+    Google.setCred(cred);
+    Google.setRefreshToken(refresh_token);
+
+
 ## Reading Sheet
 
-    await sheet.read(id, range = 'Sheet1');
+Sheet object maintains an internal sheetId and range.
 
-Returns two-dimensional array of rows and column values of sheet data.
+    const Sheet = Google.getSheet();
+    await Sheet.read(id, range = 'Sheet1');
 
-    await sheet.readDocs(id, range = 'Sheet1');
-    await sheet.readDocs(sheet_name, range, { byName: false, slugify: true });
+It two-dimensional array of rows and column values of sheet data.
+Alternatively, you can set id and range separately.
 
-Returns array of objects by using first row as field names. 
-"slugify" will convert field names to slugs (eg: "Min. Qty" to "min_qty")
+    Sheet.set(id, range)
+    await Sheet.read();
 
-## Writing Sheet
+To assume first column as header and read documents:
 
-    sheet.set(id, range = 'Sheet1');
-    await sheet.clear();
-    await sheet.write(row1);
-    await sheet.write(row2);
-    await sheet.endWrite();
+    await Sheet.readDocs(id, range = 'Sheet1');
+    await Sheet.readDocs(sheet_name, range, { byName: false, slugify: true });
+
+Returns an array of objects by using first row as field names. 
+"slugify" will convert field names to snake case (eg: "Min. Qty" to "min_qty")
+
+## Writing to Sheet
+
+    const Sheet = Google.getSheet();
+    Sheet.set(id, range); // range defaults to 'Sheet1', if not provided
+    await Sheet.clear(); // clears the range / sheet tab
+    await Sheet.write(row1);
+    await Sheet.write(row2);
+    await Sheet.endWrite();
     
-Batches up multiple rows and then write once at interval of 500 rows, or when endWrite() is called.
+Batches up multiple rows and then appends at once at interval of 500 rows, or when endWrite() is called.
+You must make a final call to endWrite to 
 
 ## Creating Sheet
 
-    await sheet.create(name);
-    await sheet.write([ 'hello', 'there' ]);
-    await sheet.create(name, folderId);
+    const Sheet = Google.getSheet();
+    await Sheet.create(name);
+    await Sheet.write([ 'hello', 'there' ]);
+    await Sheet.create(name, folderId);
 
 ## Get File Info by Id
-
-    const drive = Google.getDrive();
-    const file = drive.byId(fileId);
+    
+    const Drive = Google.getDrive();
+    const file = Drive.byId(fileId);
 
 It returns a file object with `{ id, name, mimeType }` attributes.
 
 ## Get File Info by Name
 
-    drive.byName(name, type = null, folderId = null);
+    Drive.byName(name, type = null, folderId = null);
 
 Example:
 
-    const drive = Google.getDrive();
+    const Drive = Google.getDrive();
     let file;
-    file = drive.byName('My Document');
-    file = drive.byName('example.csv', 'type/csv', parentFolderId);
-    file = drive.byName('Example', null, parentFolderId);
+    file = Drive.byName('My Document');
+    file = Drive.byName('example.csv', 'type/csv', parentFolderId);
+    file = Drive.byName('Example', null, parentFolderId);
 
 It returns a file object with `{ id, name, mimeType }` attributes.
 
 ## List Files in a Folder
 
-    drive.list(folderId);
+    Drive.list(folderId);
 
 Example: to list all files under a folder named "My Folder"
 
-    const drive = Google.getDrive();
-    const folder = drive.byName('My Folder');
-    const files = drive.list(folder.id);
+    const Drive = Google.getDrive();
+    const folder = Drive.byName('My Folder');
+    const files = Drive.list(folder.id);
 
 It returns an array of file objects with `{ id, name, mimeType }` attributes.
 
 ## Reading File (Raw)
 
-    const drive = Google.getDrive();
-    await drive.readFile(id);
+    const Drive = Google.getDrive();
+    await Drive.readFile(id);
     
 Returns string of file content.
 
+## Copy File
+
+    const Drive = Google.getDrive();
+    await Drive.copy(fileId, newName);
+
 ## Move File
 
-    const drive = Google.getDrive();
-    await drive.move(fileId, folderId);
+    const Drive = Google.getDrive();
+    await Drive.move(fileId, folderId);
 
 ## Unwrapping - Accessing underlying Google API Resources
 
-drive object holds reference to Google API's drive object as a property. So 
+Drive object holds reference to Google API's drive object as a property. So 
 to call the methods of 
 [Google Drive API](https://developers.google.com/drive/api/v3/reference).
 
 For example, to list comments on a document named 'My Document', follow below
 
     const Google = require('google-api-wrapper');
-    const drive = Google.getDrive();
-    const file = drive.byName('My Document');
+    const Drive = Google.getDrive();
+    const file = Drive.byName('My Document');
     // Below is call to underlying Google Drive API's method directly
-    const comments = drive.drive.comments.list({ fileId: file.id });
+    const comments = Drive.drive.comments.list({ fileId: file.id });
 
 Similarly, Google Sheet object is stored as sheet property of wrapper's sheet object.
 methods on sheet.sheet can be made as per
 [Google Sheet API](https://developers.google.com/sheets/api/reference/rest).
 
     const Google = require('google-api-wrapper');
-    const sheet = Google.getSheet();
+    const Sheet = Google.getSheet();
     // Calls underlying Google Sheet API
-    sheet.sheet.spreadsheets.batchGet(options);
+    Sheet.sheet.spreadsheets.batchGet(options);
 
 
 
