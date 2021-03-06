@@ -1,13 +1,41 @@
 # Google API Wrapper
 
-## Install
+## Table of Contents
+
+- [Overview](#overview)
+  - [Installation](#installation)
+  - [Basic Usage](#basic-usage)
+  - [Authentication](#authentication)
+- [Google Sheets](#google-sheets)
+  - [Reading Sheet](#reading-sheet)
+  - [Writing to Sheet](#writing-to-sheet)
+  - [Creating Sheet](#creating-sheet)
+- [Google Drive](#google-drive)
+  - [Get File Info by Id](#get-file-info-by-id)
+  - [Get File Info by Name](#get-file-info-by-name)
+  - [List Files in a Folder](#list-files-in-a-folder)
+  - [Reading File (Raw)](#reading-file-raw)
+  - [Copy File](#copy-file)
+  - [Move File](#move-file)
+  - [Upload File](#upload-file)
+  - [Create Folder](#create-folder)
+- [Miscellaneous](#miscellaneous)
+  - [Mime Type Mappings](#mime-type-mappings)
+  - [Accessing underlying Google API](#accessing-underlying-google-api)
+  - [Testing](#testing)
+
+
+
+## Overview
+
+### Installation
 Simple Wrapper around Google Sheets &amp; Drive APIs
 
     npm install google-api-wrapper
 
 This will add googleapis as dependency.
 
-## Basic Usage
+### Basic Usage
 
     const Google = require('google-api-wrapper');
     
@@ -21,7 +49,7 @@ This will add googleapis as dependency.
     
     main();
 
-## Initializing Auth
+### Authentication
 
 If you already have auth object
 
@@ -48,7 +76,9 @@ Or, set refresh token
     Google.setRefreshToken(refresh_token);
 
 
-## Reading Sheet
+## Google Sheets
+
+### Reading Sheet
 
 Sheet object maintains an internal sheetId and range.
 
@@ -69,7 +99,7 @@ To assume first column as header and read documents:
 Returns an array of objects by using first row as field names. 
 "slugify" will convert field names to snake case (eg: "Min. Qty" to "min_qty")
 
-## Writing to Sheet
+### Writing to Sheet
 
     const Sheet = Google.getSheet();
     Sheet.set(id, range); // range defaults to 'Sheet1', if not provided
@@ -81,21 +111,23 @@ Returns an array of objects by using first row as field names.
 Batches up multiple rows and then appends at once at interval of 500 rows, or when endWrite() is called.
 You must make a final call to endWrite to 
 
-## Creating Sheet
+### Creating Sheet
 
     const Sheet = Google.getSheet();
     await Sheet.create(name);
     await Sheet.write([ 'hello', 'there' ]);
     await Sheet.create(name, folderId);
 
-## Get File Info by Id
+## Google Drive
+
+### Get File Info by Id
     
     const Drive = Google.getDrive();
     const file = Drive.byId(fileId);
 
 It returns a file object with `{ id, name, mimeType }` attributes.
 
-## Get File Info by Name
+### Get File Info by Name
 
     Drive.byName(name, type = null, folderId = null);
 
@@ -109,7 +141,7 @@ Example:
 
 It returns a file object with `{ id, name, mimeType }` attributes.
 
-## List Files in a Folder
+### List Files in a Folder
 
     Drive.list(folderId);
 
@@ -121,27 +153,58 @@ Example: to list all files under a folder named "My Folder"
 
 It returns an array of file objects with `{ id, name, mimeType }` attributes.
 
-## Reading File (Raw)
+### Reading File (Raw)
 
     const Drive = Google.getDrive();
     await Drive.readFile(id);
     
 Returns string of file content.
 
-## Copy File
+### Copy File
 
     const Drive = Google.getDrive();
     await Drive.copy(fileId, newName);
 
-## Move File
+### Move File
 
     const Drive = Google.getDrive();
     await Drive.move(fileId, folderId);
 
-## Unwrapping - Accessing underlying Google API Resources
+### Upload File
 
-Drive object holds reference to Google API's drive object as a property. So 
-to call the methods of 
+    const Drive = Google.getDrive();
+    const file = await Drive.create(name, mimeType, body, parentFolderId);
+
+### Create Folder
+
+    const file = await Drive.create(name, 'folder');
+
+See mime-type mappings below for simplified mime type inputs.
+
+To create a sub-folder under another parent folder, provide null body and parent folder id.
+
+    const file = await Drive.create(subFolderName, 'folder', null, parentFolderId);
+
+
+## Miscellaneous
+
+### Mime Type Mappings
+
+Quick mimetype mappings:
+
+| Input Mime Type       | Translated Mime Type                       | 
+| ----                  | -----                                      |
+| 'folder'              | 'application/vnd.google-apps.folder'       |
+| 'doc'                 | 'application/vnd.google-apps.document'     |
+| 'document'            | 'application/vnd.google-apps.document'     |
+| 'sheet'               | 'application/vnd.google-apps.spreadsheet'  |
+| 'spreadsheet'         | 'application/vnd.google-apps.spreadsheet'  |
+
+
+### Accessing underlying Google API
+
+Drive object holds reference to Google API's drive object as a property 'drive',
+which you can use to call the methods of 
 [Google Drive API](https://developers.google.com/drive/api/v3/reference).
 
 For example, to list comments on a document named 'My Document', follow below
@@ -152,8 +215,8 @@ For example, to list comments on a document named 'My Document', follow below
     // Below is call to underlying Google Drive API's method directly
     const comments = Drive.drive.comments.list({ fileId: file.id });
 
-Similarly, Google Sheet object is stored as sheet property of wrapper's sheet object.
-methods on sheet.sheet can be made as per
+Similarly, Google Sheet object is stored as 'sheet' property of wrapper's sheet object.
+methods on Sheet.sheet can be made as per
 [Google Sheet API](https://developers.google.com/sheets/api/reference/rest).
 
     const Google = require('google-api-wrapper');
@@ -163,7 +226,7 @@ methods on sheet.sheet can be made as per
 
 
 
-## Testing
+### Testing
 
 To test the package,
 
