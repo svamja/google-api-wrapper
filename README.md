@@ -1,5 +1,7 @@
 # Google API Wrapper
 
+A simpler way to work with Google Sheets and Google Drive files. 😊
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -8,7 +10,8 @@
   - [Authentication](#authentication)
 - [Google Sheets](#google-sheets)
   - [Reading Sheet](#reading-sheet)
-  - [Writing to Sheet](#writing-to-sheet)
+  - [Writing (Appending) to Sheet](#writing-appending-to-sheet)
+  - [Overwriting to Sheet](#overwriting-to-sheet)
   - [Creating Sheet](#creating-sheet)
 - [Google Drive](#google-drive)
   - [Get File Info by Id](#get-file-info-by-id)
@@ -28,8 +31,10 @@
 
 ## Overview
 
+Simple Wrapper around Google Sheets &amp; Drive APIs. It installs googleapis as 
+dependency. It also allows easy access to underlying googleapis objects.
+
 ### Installation
-Simple Wrapper around Google Sheets &amp; Drive APIs
 
     npm install google-api-wrapper
 
@@ -99,7 +104,7 @@ To assume first column as header and read documents:
 Returns an array of objects by using first row as field names. 
 "slugify" will convert field names to snake case (eg: "Min. Qty" to "min_qty")
 
-### Writing to Sheet
+### Writing (Appending) to Sheet
 
     const Sheet = Google.getSheet();
     Sheet.set(id, range); // range defaults to 'Sheet1', if not provided
@@ -110,6 +115,15 @@ Returns an array of objects by using first row as field names.
     
 Batches up multiple rows and then appends at once at interval of 500 rows, or when endWrite() is called.
 You must make a final call to endWrite to 
+
+### Overwriting to Sheet
+
+    const Sheet = Google.getSheet();
+    const rows = await Sheet.read(sheetId, 'Sheet1');
+    rows[0][0] = 'Updated!';
+    await Sheet.overwrite(rows);
+    
+Overwrite rows at last set Sheet Id and Range. (set by read operation in previous example)
 
 ### Creating Sheet
 
