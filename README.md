@@ -114,7 +114,7 @@ Returns an array of objects by using first row as field names.
     await Sheet.endWrite();
     
 Batches up multiple rows and then appends at once at interval of 500 rows, or when endWrite() is called.
-You must make a final call to endWrite to 
+You must make a final call to endWrite to complete writing to sheet.
 
 ### Overwriting to Sheet
 
